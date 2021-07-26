@@ -20,7 +20,7 @@ setup(
     long_description_content_type="text/markdown",
     long_description=long_description,
     packages=find_packages(),
-    install_requires=['flask'],
+    install_requires=['flask', 'requests'],
     keywords=['python', 'web', 'server', 'flask', 'communication', 'network', 'webserver'],
     classifiers=[
         "Development Status :: 4 - Beta",
