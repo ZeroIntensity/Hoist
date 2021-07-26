@@ -19,8 +19,8 @@ class FlaskWrapper:
             if HOIST_MESSAGE == None:
                 return jsonify({'ERROR': 'no_message'})
             
-            app.HOIST_INTERNALSERVER._received(HOIST_MESSAGE)
-            return jsonify({'MESSAGE': HOIST_MESSAGE})
+            resp = app.HOIST_INTERNALSERVER._received(HOIST_MESSAGE)
+            return jsonify({'RESPONSE': resp})
 
         return app
     
@@ -31,7 +31,7 @@ class FlaskWrapper:
         return app
 
     def thread_server(self, app: Flask, ip: str, port: int) -> Flask:
-        server = Thread(target = self.run_server, args = (app, ip, port))
+        server: Thread = Thread(target = self.run_server, args = (app, ip, port))
         server.start()
 
         return app

@@ -19,12 +19,16 @@ This project was developed by [ZeroIntensity](https://github.com/ZeroIntensity),
 import hoist
 
 client = hoist.Client()
-ip, port = client.gen_ip_and_port()
+
+ip = hoist.get_ip()
+port = 5000
+
 server = client.create_server(ip, port)
 
-@server.received()
+@server.received('hi')
 def receive(message):
-    print(f'Received "{message}"!')
+    return 'Hello!'
+    
 ```
 
 ```py
@@ -33,11 +37,10 @@ def receive(message):
 import hoist
 
 client = hoist.Client()
-ip, port = client.gen_ip_and_port()
-server = client.find_server(ip, port)
+server = client.find_server(ip, port) # Assuming we have our ip and port from above
 
-server.send('sent') # Prints out 'Received "sent"!' in file1.py
+resp = server.send('hi')
+
+print(resp) # Prints out "Hello!"
 ```
-
-## Docs coming soon!
 
