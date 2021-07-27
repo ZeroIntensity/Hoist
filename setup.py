@@ -21,7 +21,7 @@ setup(
     long_description=long_description,
     packages=find_packages(),
     install_requires=['flask', 'requests'],
-    keywords=['python', 'web', 'server', 'flask', 'communication', 'network', 'webserver'],
+    keywords=['python', 'web', 'server', 'flask', 'communication', 'network', 'webserver', 'websocket'],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",

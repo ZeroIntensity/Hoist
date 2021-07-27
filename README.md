@@ -8,6 +8,7 @@ Communicate with other machines via the network.
 This project was developed by [ZeroIntensity](https://github.com/ZeroIntensity), under the MIT License.
 ### Dependencies
 - [Flask](https://pypi.org/project/flask)
+- [Requests](https://pypi.org/project/requests)
 
 [GitHub](https://github.com/ZeroIntensity/hoist)
 
