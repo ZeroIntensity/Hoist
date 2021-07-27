@@ -45,7 +45,7 @@ class HoistServer:
         return str(resp), success
     
     def received(self, message: Union[str, bool] = None) -> None:
-        """Decorator that adds a function to be called"""
+        """Decorator that adds a function to be called when a message is received."""
         def decorator(func: Callable):
             if not message:
                 self._on_receive = func
@@ -53,6 +53,7 @@ class HoistServer:
                 self._for_receive[message] = func
             return None
         return decorator
+    
 
         
 

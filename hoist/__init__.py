@@ -4,3 +4,4 @@ from .external_server import ExternalServer
 from .server import HoistServer
 from .get_ip import get_ip
 from .get_host import get_host
+from .generate_key import generate_key
