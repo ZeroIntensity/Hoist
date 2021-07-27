@@ -1,6 +1,3 @@
-![test](./hoist_text.png)
-
-
 **Note:** Project currently under development, not all features have been implemented.
 ## Credits
 ### Developer
