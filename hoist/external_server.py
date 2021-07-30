@@ -25,7 +25,6 @@ class ExternalServer:
                 if raw_response:
                     return json
                 else:
-                    print('a')
                     return json['ERROR']
             else:
                 raise ServerResponseError(f'the server responded with error "{json["ERROR"]}"')
