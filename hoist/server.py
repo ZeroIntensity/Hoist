@@ -1,7 +1,9 @@
 from flask import Flask, request
 from typing import Callable, Union, Tuple
-
+from .utils.error import Error
+from .errors import ServerResponseError
 class HoistServer:
+    """Class for an internal hoist server."""
     def __init__(self, app: Flask, handle_errors: bool = True) -> None:
         self._app: Flask = app
         self._received_messages: list = [] # List of messages sent to the server
@@ -32,16 +34,22 @@ class HoistServer:
                     if not self._handle_errors:
                         raise error
         
-            if not resp:
-                try:
-                    resp = self._on_receive(message)
-                except Exception as error:
-                    resp = 'Server encountered an internal error.'
-                    success = False
+        if not resp:
+            try:
+                resp = self._on_receive(message)
+            except Exception as error:
+                resp = 'Server encountered an internal error.'
+                success = False
         
-                    if not self._handle_errors:
-                        raise error
-        
+                if not self._handle_errors:
+                    raise error
+
+
+        if isinstance(resp, Error):
+            if self._handle_errors:
+                return resp, False
+            raise ServerResponseError(f"callback returned an error of {resp._message}")
+
         return str(resp), success
     
     def received(self, message: Union[str, bool] = None) -> None:

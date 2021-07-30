@@ -2,6 +2,7 @@ import requests
 from .errors import ServerResponseError
 
 class ExternalServer:
+    """Class for representing a hoist server."""
     def __init__(self, ip: str, port: int):
         self.ip: str = ip
         self.port: int = port
@@ -11,7 +12,7 @@ class ExternalServer:
     def send(self, message: str, key: str = "", raise_if_error: bool = True, raw_response: bool = False) -> str:
         """Send a message to the server."""
         
-        resp = requests.get(self.base, params = {'msg': message, "auth": key})
+        resp = requests.post(self.base, params = {'msg': message, "auth": key})
         try:
             json: dict = resp.json()
         except:
@@ -23,6 +24,7 @@ class ExternalServer:
                 if raw_response:
                     return json
                 else:
+                    print('a')
                     return json['ERROR']
             else:
                 raise ServerResponseError(f'the server responded with error "{json["ERROR"]}"')
