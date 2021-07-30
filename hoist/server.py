@@ -5,6 +5,7 @@ from .errors import ServerResponseError
 class HoistServer:
     """Class for an internal hoist server."""
     def __init__(self, app: Flask, handle_errors: bool = True) -> None:
+        """Class for an internal hoist server."""
         self._app: Flask = app
         self._received_messages: list = [] # List of messages sent to the server
         self._for_receive: dict = {} # Dictionary of functions to be run when a certain message is received

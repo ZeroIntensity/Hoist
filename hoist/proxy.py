@@ -6,6 +6,7 @@ from .utils.error import Error
 class HoistProxy:
     """Class for operating an internal proxy."""
     def __init__(self, app: Flask, handle_errors: bool = True) -> None:
+        """Class for operating an internal proxy."""
         self._connections: set = set()
         self._app = app
         self._handle_errors = handle_errors

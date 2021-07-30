@@ -4,6 +4,7 @@ from .errors import ServerResponseError
 class ExternalServer:
     """Class for representing a hoist server."""
     def __init__(self, ip: str, port: int):
+        """Class for representing a hoist server."""
         self.ip: str = ip
         self.port: int = port
         self.url: str = f'http://{ip}:{port}'
