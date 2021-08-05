@@ -1,25 +1,65 @@
-from flask import Flask, request
+from flask import Flask
 from typing import Callable, Union, Tuple
-from .utils.error import Error
-from .errors import ServerResponseError
-class HoistServer:
+from ..utils.error import Error
+from ..errors import ServerResponseError
+class Server:
     """Class for an internal hoist server."""
     def __init__(self, app: Flask, handle_errors: bool = True) -> None:
         """Class for an internal hoist server."""
         self._app: Flask = app
-        self._received_messages: list = [] # List of messages sent to the server
-        self._for_receive: dict = {} # Dictionary of functions to be run when a certain message is received
-        self._on_receive: Callable = None
+        self._received_messages: list = []
+        self._for_receive: dict = {}
+        self._on_receive: Union[Callable, bool] = False
         self._handle_errors = handle_errors
+        self._block_requests: bool = False
+
+    @property
+    def on_receive(self) -> Union[Callable, bool]:
+        """Function called when the server receives a message and no function has been registered to be run when that message is received."""
+        return self._for_receive
+
+    @property
+    def for_receive(self) -> dict:
+        """Dictionary of functions to be run when a certain message is received."""
+        return self._for_receive        
+
+    @property
+    def app(self) -> Flask:
+        """Flask instance of server."""
+        return self._app
 
     @property
     def received_messages(self) -> list:
-        """Property for all received messages."""
+        """All received messages."""
         return self._received_messages
-    
+
+    def clear_received_messages(self) -> None:
+        """Clear all received messages."""
+        self._received_messages = []
+
+    def remove_callback(self, callback_message: str = None) -> None:
+        """Function to remove a registered callback."""
+        if callback_message:
+            del self._for_receive[callback_message]
+        else:
+            self._on_receive = None
+
+    def toggle_requests(self) -> bool:
+        """Function to toggle requests."""
+
+        if self._block_requests == True:
+            self._block_requests = False
+        else:
+            self._block_requests = True
+        
+        return self._block_requests
 
     def _received(self, message: str) -> Tuple[str, bool]:
         """Function called when the flask app receives a message."""
+        
+        if self._block_requests:
+            return Error('Server has blocked requests', 403), False 
+
         self._received_messages += message
         resp: Union[str, bool] = False
         success: bool = True

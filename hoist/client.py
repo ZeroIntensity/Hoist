@@ -2,8 +2,8 @@ from flask import Flask
 import logging as logs
 import os
 from .flask_wrapper import FlaskWrapper
-from .server import HoistServer
-from .external_server import ExternalServer
+from .server.server import Server
+from .server.external_server import ExternalServer
 from .errors import InvalidServerError, ServerExistsError
 import requests
 from .utils.error import Error
@@ -24,9 +24,9 @@ class Client:
         return app
 
     @staticmethod
-    def find_server(ip: str = "localhost", port: int = 5000) -> ExternalServer:
+    def find_server(ip: str = "localhost", port: int = 5000, protocol: str = "http") -> ExternalServer:
         """Find a hoist server."""
-        server: ExternalServer = ExternalServer(ip, port)
+        server: ExternalServer = ExternalServer(ip, port, protocol)
 
         if not server.check():
             raise InvalidServerError("specified server does not exist or does not have hoist setup.")
@@ -43,15 +43,14 @@ class Client:
     run: bool = True,
     handle_errors: bool = True
     ):
-        raise NotImplemented('Proxys have not yet been implemented to Hoist.')
-
+        raise NotImplemented('proxys are not yet supported')
         app: Flask = self.create_server(ip, port, [""], logging, startup_message, thread, run, handle_errors, True)
         wrapper = FlaskWrapper()
         server = app.HOIST_INTERNALSERVER
         
         @server.received()
         def catch_all(message):
-            return Error('sending messages to proxies is not allowed.', 403)
+            return Error('Sending messages to proxies is not allowed.', 403)
         
         wrapper.add_proxy(app, handle_errors, auth)
 
@@ -65,7 +64,7 @@ class Client:
     run: bool = True,
     handle_errors: bool = True,
     return_flask_app: bool = False
-) -> Union[HoistServer, Flask]: # Function for creating flask app with hoist route
+) -> Union[Server, Flask]: # Function for creating flask app with hoist route
         """Creates a completely ready-to-go hoist app."""
         wrapper: FlaskWrapper = FlaskWrapper()
         app: Flask = wrapper.make_server()

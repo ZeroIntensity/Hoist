@@ -1,10 +1,10 @@
 from flask import Flask, jsonify, request
 from threading import Thread
-from .server import HoistServer
+from .server.server import Server
 from .errors import HoistExistsError
 from .utils.error import Error
-from .proxy import HoistProxy
-from types import Callable
+from .proxy.proxy import HoistProxy
+from typing import Callable, Union
 
 class FlaskWrapper:
     """Wrapper for Flask."""
@@ -19,7 +19,7 @@ class FlaskWrapper:
         if hasattr(app, 'HOIST_INTERNALSERVER'):
             raise HoistExistsError('hoist is already set up on app')
 
-        app.HOIST_INTERNALSERVER = HoistServer(app, handle_errors)
+        app.HOIST_INTERNALSERVER = Server(app, handle_errors)
 
         @app.route('/hoist/send', methods=['POST'])
         def hoist_route() -> str: # Route to be added to flask instance
@@ -30,12 +30,13 @@ class FlaskWrapper:
     @staticmethod
     def get_response(app: Flask, auth: list, callback: Callable, argument: str) -> str:
         """Function for getting the response of a request."""
+
         ARG: str = request.args.get(argument)
         TOKEN = request.args.get('auth')
 
         if not TOKEN in auth:
-            return jsonify({'ERROR': 'unauthorized'}), 401
-            
+            return jsonify({'ERROR': 'unauthorized'}), 401 
+
         resp, success = callback(ARG)
 
         if isinstance(resp, Error):
@@ -50,9 +51,7 @@ class FlaskWrapper:
 
     def add_proxy(self, app: Flask, handle_errors: bool = True, auth: list = [""]) -> Flask:
         """Function for setting up a hoist proxy on an app."""
-
-        raise NotImplemented('Proxys have not yet been implemented to Hoist.')
-
+        raise NotImplemented('proxys are not yet supported')
         if hasattr(app, 'HOIST_INTERNALPROXY'):
             raise HoistExistsError('hoist is already set up on app')
 
@@ -61,11 +60,11 @@ class FlaskWrapper:
 
         @app.route('/hoist/proxy/connect', methods=['POST'])
         def hoist_proxy_connect() -> str:
-            return self.get_response(app, auth, app.HOIST_INTERNALPROXY._connect, 'address')
+            return self.get_response(app, auth, app.HOIST_INTERNALPROXY._connect, 'data')
 
         @app.route('/hoist/proxy/disconnect', methods=['POST'])
         def hoist_proxy_disconnect() -> str:
-            return self.get_response(app, auth, app.HOIST_INTERNALPROXY._disconnect, 'address')
+            return self.get_response(app, auth, app.HOIST_INTERNALPROXY._disconnect, 'data')
 
 
         return app
