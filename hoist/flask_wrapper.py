@@ -38,16 +38,14 @@ class FlaskWrapper:
             return jsonify({'ERROR': 'unauthorized'}), 401 
 
         resp, success = callback(ARG)
-
+        print(resp, success)
         if isinstance(resp, Error):
             return jsonify({'ERROR': resp._message}), resp._code
 
         if not success:
             return jsonify({'ERROR': resp}), 500
-            
         else:
             return jsonify({'RESPONSE': resp})
-
 
     def add_proxy(self, app: Flask, handle_errors: bool = True, auth: list = [""]) -> Flask:
         """Function for setting up a hoist proxy on an app."""

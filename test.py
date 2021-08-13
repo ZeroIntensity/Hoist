@@ -1,4 +1,4 @@
 import hoist
 
 client = hoist.Client()
-proxy = client.create_server()
+server = client.create_server()

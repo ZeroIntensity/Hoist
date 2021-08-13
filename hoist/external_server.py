@@ -47,9 +47,7 @@ class ExternalServer:
         except:
             raise ServerResponseError("the server did not respond, most likely due to an unhandled internal exception.")
 
-
         if not resp.status_code == 200:
-    
             if raise_if_unauthorized and resp.status_code == 401:
                 raise ServerAuthenticationError('invalid authentication key.')
 
@@ -67,6 +65,8 @@ class ExternalServer:
 
         if raw_response:
             return json
+        else:
+            return json['RESPONSE']
         
 
 

@@ -30,4 +30,4 @@ from .generate_key import generate_key
 from .error import Error
 from .errors import ServerResponseError, HoistExistsError, InvalidServerError, ServerExistsError, ServerAuthenticationError
 
-__VERSION__ = '0.1.0'
+__VERSION__ = '0.1.1'
