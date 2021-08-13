@@ -43,7 +43,7 @@ class Client:
     run: bool = True,
     handle_errors: bool = True
     ):
-        raise NotImplemented('proxys are not yet supported')
+        raise NotImplementedError('proxys are not yet supported')
         app: Flask = self.create_server(ip, port, [""], logging, startup_message, thread, run, handle_errors, True)
         wrapper = FlaskWrapper()
         server = app.HOIST_INTERNALSERVER

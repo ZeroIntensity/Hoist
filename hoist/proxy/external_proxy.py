@@ -1,2 +1,2 @@
 class ExternalProxy:
-    raise NotImplemented('proxys are not yet supported')
+    raise NotImplementedError('proxys are not yet supported')

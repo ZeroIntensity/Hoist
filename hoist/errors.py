@@ -13,3 +13,7 @@ class ServerExistsError(Exception):
 class HoistExistsError(Exception):
     """Raised when trying to init hoist on a server that is already setup."""
     pass
+
+class ServerAuthenticationError(Exception):
+    """Raised when authentication key is invalid."""
+    pass

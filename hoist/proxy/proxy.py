@@ -13,7 +13,7 @@ class Proxy:
         self._on_connect = None
         self._on_disconnect = None
 
-        raise NotImplemented('proxys are not yet supported')
+        raise NotImplementedError('proxys are not yet supported')
 
     
 

@@ -29,4 +29,3 @@ from .utils.get_host import get_host
 from .utils.generate_key import generate_key
 from .utils.error import Error
 from .errors import ServerResponseError, HoistExistsError, InvalidServerError, ServerExistsError
-from .proxy.external_proxy import ExternalProxy
