@@ -2,11 +2,11 @@ from flask import Flask
 import logging as logs
 import os
 from .flask_wrapper import FlaskWrapper
-from .server.server import Server
-from .server.external_server import ExternalServer
+from .server import Server
+from .external_server import ExternalServer
 from .errors import InvalidServerError, ServerExistsError
 import requests
-from .utils.error import Error
+from .error import Error
 from typing import Union
 
 class Client:

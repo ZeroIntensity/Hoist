@@ -22,10 +22,12 @@ server2.send('hi') # Prints "Received hi"
 
 from .client import Client
 from .flask_wrapper import FlaskWrapper
-from .server.external_server import ExternalServer
-from .server.server import Server
-from .utils.get_ip import get_ip
-from .utils.get_host import get_host
-from .utils.generate_key import generate_key
-from .utils.error import Error
-from .errors import ServerResponseError, HoistExistsError, InvalidServerError, ServerExistsError
+from .external_server import ExternalServer
+from .server import Server
+from .get_ip import get_ip
+from .get_host import get_host
+from .generate_key import generate_key
+from .error import Error
+from .errors import ServerResponseError, HoistExistsError, InvalidServerError, ServerExistsError, ServerAuthenticationError
+
+__VERSION__ = '0.1.0'

@@ -1,7 +1,7 @@
 from flask import Flask
 from typing import Callable, Union, Tuple
-from ..utils.error import Error
-from ..errors import ServerResponseError
+from .error import Error
+from .errors import ServerResponseError
 class Server:
     """Class for an internal hoist server."""
     def __init__(self, app: Flask, handle_errors: bool = True) -> None:

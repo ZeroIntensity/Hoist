@@ -1,7 +1,7 @@
 from flask import Flask
 from typing import Union
-from ..errors import ServerResponseError
-from ..utils.error import Error
+from .errors import ServerResponseError
+from .error import Error
 
 class Proxy:
     """Class for operating an internal proxy."""

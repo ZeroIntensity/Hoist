@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, request
 from threading import Thread
-from .server.server import Server
+from .server import Server
 from .errors import HoistExistsError
-from .utils.error import Error
+from .error import Error
 #from .proxy.proxy import Proxy
 from typing import Callable, Union
 

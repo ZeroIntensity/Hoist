@@ -1,7 +1,7 @@
 import requests
-from ..errors import ServerResponseError, ServerAuthenticationError
+from .errors import ServerResponseError, ServerAuthenticationError
 from typing import Union
-from ..utils.error import Error
+from .error import Error
 
 class ExternalServer:
     """Class for representing a hoist server."""
