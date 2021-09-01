@@ -18,7 +18,7 @@ class Error:
         return self._code
     
     def __repr__(self) -> str:
-        return f'Error(message={self.message}, code={self.code}'
+        return f'Error(message={self.message}, code={self.code})'
     
     def __str__(self) -> str:
         return self._message

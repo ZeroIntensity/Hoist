@@ -15,8 +15,6 @@ class Proxy:
 
         raise NotImplementedError('proxys are not yet supported')
 
-    
-
     def _connnect(self, data: list) -> None:
         """Function for handling connections to the proxy."""
 

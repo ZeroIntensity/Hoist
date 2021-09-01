@@ -4,7 +4,8 @@ from .server import Server
 from .errors import HoistExistsError
 from .error import Error
 #from .proxy.proxy import Proxy
-from typing import Callable, Union
+from typing import Callable
+from .version import __version__
 
 class FlaskWrapper:
     """Wrapper for Flask."""
@@ -14,7 +15,7 @@ class FlaskWrapper:
         app: Flask = Flask(__name__)
         return app
 
-    def add_hoist(self, app: Flask, handle_errors: bool = True, auth: list = [""]) -> Flask:
+    def add_hoist(self, app: Flask, handle_errors: bool = True, auth: list = [""], premade_pages: bool = True) -> Flask:
         """Function for setting up hoist on an app."""
         if hasattr(app, 'HOIST_INTERNALSERVER'):
             raise HoistExistsError('hoist is already set up on app')
@@ -22,8 +23,23 @@ class FlaskWrapper:
         app.HOIST_INTERNALSERVER = Server(app, handle_errors)
 
         @app.route('/hoist/send', methods=['POST'])
-        def hoist_route() -> str: # Route to be added to flask instance
+        def hoist_send() -> str:
             return self.get_response(app, auth, app.HOIST_INTERNALSERVER._received, 'msg')
+
+        if premade_pages:
+            @app.route('/hoist', methods=['POST', 'GET'])
+            def hoist_home() -> str:
+                if request.method == 'POST':
+                    return jsonify({'RESPONSE': f'Version {__version__}'})
+
+                # done with html instead of flask.render_template so i dont have to touch the apps template_folder property
+                with open('./hoist/home.html') as f:
+                    html: str = f.read()
+                
+                html = html.replace('{{ version }}', __version__).replace('{{ serverUrl }}', request.base_url)
+
+                return html
+                
 
         return app
 
@@ -33,12 +49,11 @@ class FlaskWrapper:
 
         ARG: str = request.args.get(argument)
         TOKEN = request.args.get('auth')
-
         if not TOKEN in auth:
             return jsonify({'ERROR': 'unauthorized'}), 401 
 
         resp, success = callback(ARG)
-        print(resp, success)
+
         if isinstance(resp, Error):
             return jsonify({'ERROR': resp._message}), resp._code
 

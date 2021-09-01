@@ -12,14 +12,14 @@ from typing import Union
 class Client:
     """Main entry point class for hoist."""
     @staticmethod
-    def add_hoist(app: Flask, handle_errors: bool = True, auth: list = [""]) -> Flask:
+    def add_hoist(app: Flask, handle_errors: bool = True, auth: list = [""], premade_pages: bool = True) -> Flask:
         """Add hoist to a flask app."""
 
         if not isinstance(app, Flask):
             raise TypeError("argument \"app\" must be a Flask instance.")
 
         wrapper: FlaskWrapper = FlaskWrapper()
-        wrapper.add_hoist(app, handle_errors, auth)
+        wrapper.add_hoist(app, handle_errors, auth, premade_pages)
 
         return app
 
@@ -63,7 +63,8 @@ class Client:
     thread: bool = True,
     run: bool = True,
     handle_errors: bool = True,
-    return_flask_app: bool = False
+    return_flask_app: bool = False,
+    premade_pages: bool = True
 ) -> Union[Server, Flask]: # Function for creating flask app with hoist route
         """Creates a completely ready-to-go hoist app."""
         wrapper: FlaskWrapper = FlaskWrapper()
@@ -83,7 +84,7 @@ class Client:
             os.environ["WERKZEUG_RUN_MAIN"] = "true" # Disable starting nessage
         
 
-        wrapper.add_hoist(app, handle_errors, auth) # Add hoist to flask app
+        wrapper.add_hoist(app, handle_errors, auth, premade_pages) # Add hoist to flask app
         if run:
             if thread:
                 wrapper.thread_server(app, ip, port) # Run the flask app via thread instead of normally running it

@@ -29,5 +29,4 @@ from .get_host import get_host
 from .generate_key import generate_key
 from .error import Error
 from .errors import ServerResponseError, HoistExistsError, InvalidServerError, ServerExistsError, ServerAuthenticationError
-
-__VERSION__ = '0.1.1'
+from .version import __version__
