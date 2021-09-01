@@ -5,7 +5,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/ZeroIntensity/Hoist?color=success)
 ![https://discord.gg/W9QwbpbUbJ](https://discord.com/api/guilds/882712747048058920/embed.png)
 
-**Documentation coming in version `0.1.3`**
+**Documentation coming in version `0.1.4`**
 
 - [GitHub](https://github.com/ZeroIntensity/Hoist)
 - [PyPI](https://pypi.org/project/hoist3)
