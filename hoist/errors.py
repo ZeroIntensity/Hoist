@@ -17,3 +17,7 @@ class HoistExistsError(Exception):
 class ServerAuthenticationError(Exception):
     """Raised when authentication key is invalid."""
     pass
+
+class SocketNotSupportedError(Exception):
+    """Raised when trying to create a websocket on a non-fastapi server."""
+    pass
