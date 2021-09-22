@@ -56,7 +56,7 @@ HTML: str = '''
 			<p style="font-size: 20px">App running successfully!</p>
 		</div>
 		<script type="text/javascript">
-			const serverUrl = "{{ serverUrl }}";
+			const serverUrl = window.location.href;
 			var auth = "";
 
 			async function httpPost(url) {

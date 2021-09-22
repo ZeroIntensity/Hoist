@@ -6,17 +6,18 @@ from .server import Server
 from .external_server import ExternalServer
 from .errors import InvalidServerError, ServerExistsError
 import requests
-from .error import Error
-from typing import Union
+from typing import Union, List
+from .fastapi_wrapper import FastAPIWrapper
+from fastapi import FastAPI
 
 class Client:
     """Main entry point class for hoist."""
     @staticmethod
-    def add_hoist(app: Flask, handle_errors: bool = True, auth: list = [""], premade_pages: bool = True) -> Flask:
+    def add_hoist(app: Union[Flask, FastAPI], handle_errors: bool = True, auth: List[str] = [""], premade_pages: bool = True) -> Flask:
         """Add hoist to a flask app."""
 
-        if not isinstance(app, Flask):
-            raise TypeError("argument \"app\" must be a Flask instance.")
+        if (not isinstance(app, Flask)) and (not isinstance(app, FastAPI)):
+            raise TypeError("argument \"app\" must be a Flask or FastAPI instance.")
 
         wrapper: FlaskWrapper = FlaskWrapper()
         wrapper.add_hoist(app, handle_errors, auth, premade_pages)
@@ -33,26 +34,6 @@ class Client:
     
         return server
 
-    def create_proxy(self,
-    ip: str = "localhost",
-    port: int = 5000,
-    auth: list = [""],
-    logging: bool = False,
-    startup_message: bool = False,
-    thread: bool = True,
-    run: bool = True,
-    handle_errors: bool = True
-    ):
-        raise NotImplementedError('proxys are not yet supported')
-        app: Flask = self.create_server(ip, port, [""], logging, startup_message, thread, run, handle_errors, True)
-        wrapper = FlaskWrapper()
-        server = app.HOIST_INTERNALSERVER
-        
-        @server.received()
-        def catch_all(message):
-            return Error('Sending messages to proxies is not allowed.', 403)
-        
-        wrapper.add_proxy(app, handle_errors, auth)
 
     def create_server(self, 
     ip: str = "localhost",
@@ -63,35 +44,48 @@ class Client:
     thread: bool = True,
     run: bool = True,
     handle_errors: bool = True,
-    return_flask_app: bool = False,
-    premade_pages: bool = True
-) -> Union[Server, Flask]: # Function for creating flask app with hoist route
+    return_app: bool = False,
+    premade_pages: bool = True,
+    server_type: str = 'fastapi'
+) -> Union[Server, Flask]:
         """Creates a completely ready-to-go hoist app."""
-        wrapper: FlaskWrapper = FlaskWrapper()
-        app: Flask = wrapper.make_server()
+
+        if server_type == 'flask':
+            wrapper = FlaskWrapper()
+
+            if not logging:
+                log = logs.getLogger('werkzeug')
+                log.disabled = True
+            
+            if not startup_message:
+                os.environ["WERKZEUG_RUN_MAIN"] = "true" 
+
+        elif server_type == 'fastapi':
+            if not logging:
+                log = logs.getLogger("uvicorn")
+
+            wrapper = FastAPIWrapper()
+        else:
+            raise ValueError('argument "server_type" must be either "flask" or "fastapi"')
+
+        app = wrapper.make_server()
 
         try:
             requests.get(f'http://{ip}:{port}')
             raise ServerExistsError(f'ip and port are already being used.')
         except:
             pass
-
-        if not logging:
-            log = logs.getLogger('werkzeug') # Get werkzeug logger
-            log.disabled = True
-        
-        if not startup_message:
-            os.environ["WERKZEUG_RUN_MAIN"] = "true" # Disable starting nessage
         
 
-        wrapper.add_hoist(app, handle_errors, auth, premade_pages) # Add hoist to flask app
+        wrapper.add_hoist(app, handle_errors, auth, premade_pages)
+
         if run:
             if thread:
-                wrapper.thread_server(app, ip, port) # Run the flask app via thread instead of normally running it
+                wrapper.thread_server(app, ip, port)
             else:
                 wrapper.run_server(app, ip, port)
-
-        if not return_flask_app:
+        
+        if not return_app:
             return app.HOIST_INTERNALSERVER
 
         return app

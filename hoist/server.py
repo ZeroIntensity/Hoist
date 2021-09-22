@@ -1,13 +1,15 @@
 from flask import Flask
 from typing import Callable, Union, Tuple, Any
 from .error import Error
-from .errors import ServerResponseError
+from fastapi import FastAPI
+from .errors import SocketNotSupportedError
+from .websocket import Socket
 
 class Server:
     """Class for an internal hoist server."""
-    def __init__(self, app: Flask, handle_errors: bool = True, force_catch_all: bool = False) -> None:
+    def __init__(self, app: Union[Flask, FastAPI], handle_errors: bool = True, force_catch_all: bool = False) -> None:
         """Class for an internal hoist server."""
-        self._app: Flask = app
+        self._app: Union[Flask, FastAPI] = app
         self._received_messages: list = []
         self._for_receive: dict = {}
         self._on_receive: Union[Callable, bool] = False
@@ -27,8 +29,8 @@ class Server:
         return self._for_receive        
 
     @property
-    def app(self) -> Flask:
-        """Flask instance of server."""
+    def app(self) -> Union[Flask, FastAPI]:
+        """Server application."""
         return self._app
 
     @property
@@ -68,9 +70,10 @@ class Server:
             self._block_requests = True
         
         return self._block_requests
+    
 
     def _received(self, message: str) -> Tuple[str, bool]:
-        """Function called when the flask app receives a message."""
+        """Function called when the app receives a message."""
         
         if self._block_requests:
             return Error('Server has blocked requests.', 403), False 
@@ -94,7 +97,7 @@ class Server:
                             raise error
         if (not resp) or (self._force_catch_all == True):
             try:
-                if self._force_catch_all:
+                if self._force_catch_all and self._on_receive:
                     self._on_receive(message)
                 else:
                     if self._on_receive:
@@ -127,7 +130,22 @@ class Server:
     def add_handler(self, func: Callable, message: Union[str, bool] = None) -> None:
         """Function for adding a handler without using a decorator."""
         self.received(message)(func)
-    
+
+    def create_socket(self, route: str) -> Socket:
+        app: FastAPI = self.app
+
+        if not isinstance(app, FastAPI):
+            raise SocketNotSupportedError('websockets are only supported with fastapi')
+
+        if not hasattr(app, 'HOIST_SOCKETS'):
+            app.HOIST_SOCKETS = {}
+        
+        sock = Socket(app, route)
+        app.HOIST_SOCKETS[route] = sock
+
+        app.HOIST_WRAPPER.add_socket(app, route)
+
+        return sock
 
         
 
