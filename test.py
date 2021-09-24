@@ -1,13 +1,17 @@
 import hoist
 
 client = hoist.Client()
-server = client.create_server()
-socket = server.create_socket('/ws')
+mysock = client.create_server().create_socket('/ws')
 
-@socket.received('test')
-def test(message):
-    return input('send resp to socket: ')
+@mysock.received()
+def socke(msg) -> str:
+    return input("return message: ")
 
-@socket.connected()
-def connect() -> None:
-    print('A client connected!')
+server = client.find_server()
+socket = server.find_socket('/ws')
+
+@socket.connect()
+async def connect(sock: hoist.SocketConnection):
+    while True:
+        resp = await sock.send(input('send message to socket: '))
+        print(resp)

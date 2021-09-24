@@ -47,7 +47,7 @@ class Client:
     return_app: bool = False,
     premade_pages: bool = True,
     server_type: str = 'fastapi'
-) -> Union[Server, Flask]:
+) -> Union[Server, Flask, FastAPI]:
         """Creates a completely ready-to-go hoist app."""
 
         if server_type == 'flask':

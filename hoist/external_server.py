@@ -1,7 +1,8 @@
 import requests
-from .errors import ServerResponseError, ServerAuthenticationError
+from .errors import InvalidSocketError, ServerResponseError, ServerAuthenticationError
 from typing import Union
 from .error import Error
+from .external_socket import ExternalSocket
 
 class ExternalServer:
     """Class for representing a hoist server."""
@@ -68,12 +69,13 @@ class ExternalServer:
         else:
             return json['RESPONSE']
         
-
+    def find_socket(self, route: str, protocol: str = 'ws') -> ExternalSocket:
+        return ExternalSocket(f'{protocol}://{self.ip}:{self.port}', route)
 
     def check(self) -> bool:
         """Check if a server is online."""
         try:
-            requests.get(self.__base)
+            requests.get(self.__url)
         except:
             return False
         

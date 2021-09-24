@@ -21,3 +21,10 @@ class ServerAuthenticationError(Exception):
 class SocketNotSupportedError(Exception):
     """Raised when trying to create a websocket on a non-fastapi server."""
     pass
+
+class InvalidSocketError(Exception):
+    """Raised when trying to connect to a non-websocket route or a socket does not exist."""
+    pass
+
+class SocketResponseError(Exception):
+    """Raised when a socket response is invalid."""

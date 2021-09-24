@@ -28,7 +28,9 @@ from .get_ip import get_ip
 from .get_host import get_host
 from .generate_key import generate_key
 from .error import Error
-from .errors import ServerResponseError, HoistExistsError, InvalidServerError, ServerExistsError, ServerAuthenticationError, SocketNotSupportedError
+from .errors import ServerResponseError, HoistExistsError, InvalidServerError, ServerExistsError, ServerAuthenticationError, SocketNotSupportedError, InvalidSocketError, SocketResponseError
 from .version import __version__
 from .fastapi_wrapper import FastAPIWrapper
 from .websocket import Socket
+from .external_socket import ExternalSocket
+from .socket_connection import SocketConnection

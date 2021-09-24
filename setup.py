@@ -20,7 +20,7 @@ setup(
     long_description_content_type="text/markdown",
     long_description=long_description,
     packages=find_packages(),
-    install_requires=['flask', 'requests', 'fastapi', 'uvicorn'],
+    install_requires=['flask', 'requests', 'fastapi', 'uvicorn', 'asyncio'],
     keywords=['python', 'web', 'server', 'communication', 'network', 'webserver', 'websocket', 'sockets'],
     classifiers=[
         "Development Status :: 4 - Beta",
