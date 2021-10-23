@@ -1,4 +1,7 @@
 site_name: Hoist
+nav:
+  - Home: index.md
+  - Getting Started: getting_started.md
 theme:
   name: readthedocs
   highlightjs: true

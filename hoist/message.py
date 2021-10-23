@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Optional
 
 @dataclass
 class Message:
@@ -10,4 +10,4 @@ class Message:
 @dataclass
 class MessageBody:
     """Class for representing the FastAPI message body."""
-    message: str = None
+    message: Optional[str] = None

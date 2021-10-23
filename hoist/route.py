@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from typing import Coroutine, Dict, Callable, Union
+from typing import Coroutine, Dict, Callable, Union, Tuple
 from .response import Response
 from .message import Message
 
@@ -33,12 +33,13 @@ class Route:
     async def got_message(self, message: Message = None) -> str:
         """Internal method for calling a message listener."""
         listener: Callable = self.message_listeners.get(message.content)
+        resolver: Union[str, Tuple[Union[str, int]]] = await listener(message)
+        
+        code: int = resolver[1] if isinstance(resolver, tuple) else 200
+        msg: str = resolver[0]
+        failure: bool = False if (code >= 200) and (code <= 300) else True
 
-        if not listener:
-            return Response('Server did not respond.', 502, True)
-        else:
-            function_resp = await listener(message)
-            return Response(*function_resp)
+        return Response('Server did not respond.', 502, True) if not listener else Response(message = msg, code = code, failure = failure)
     
     def received(self, message: Union[str, None] = None) -> None:
         """Decorator that adds a function to be called when a message is received."""
