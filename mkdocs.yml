@@ -1,7 +1,34 @@
 site_name: Hoist
 nav:
   - Home: index.md
-  - Getting Started: getting_started.md
+  - Installation: installation.md
+  - Creating a server: server.md
+  - Reference: reference.md
 theme:
-  name: readthedocs
-  highlightjs: true
+  name: material
+  palette: #
+    - media: "(prefers-color-scheme: light)" #
+
+      scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+      primary: white
+    - media: "(prefers-color-scheme: dark)" #
+
+      scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+      accent: indigo
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.snippets
+  - toc:
+      toc_depth: 3
+
+extra_css:
+  - extra.css

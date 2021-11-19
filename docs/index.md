@@ -5,8 +5,8 @@ Hoist is a library for easily creating and managing HTTP and WebSocket connectio
 ## Features
 
 - Easy to use with object oriented syntax
-- Async support
-- Full typehint support
+- Asynn
+- Full typehints with docstrings
 
 ## Quick Example
 

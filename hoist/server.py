@@ -15,16 +15,25 @@ class Server(Route):
         return self._routes
     
     @routes.setter
-    def add_route(self, route: Route) -> None:
+    def routes(self, route: Route) -> None:
         self._routes.append(route)
 
-    def create_route(self, path: str) -> Route:
+    def create_route(self, path: str, auth: List[str] = []) -> Route:
         """Function for adding a route to the server."""
-        route = Route(self.server, self.url + path)
+        route = Route(self.server, self.url + path, auth)
 
         @self.server.post(path)
         async def rt(body: MessageBody, request: Request, response: Response) -> None:
             msg = Message(body.message, request.headers)
+
+            if auth:
+                if not body.auth in auth:
+                    response.status_code = 401
+                    return {
+                        'error': 'Invalid authentication token.',
+                        'status': 401
+                    }
+
             resp: Response = await route.got_message(msg)
             resp_type: str = 'response' if not resp.failure else 'error'
 
@@ -37,3 +46,4 @@ class Server(Route):
 
         self.routes.append(route)
         return route
+    

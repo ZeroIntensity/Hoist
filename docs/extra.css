@@ -1,0 +1,4 @@
+[data-md-color-scheme="slate"] {
+	--md-primary-fg-color: hsla(var(--md-hue), 15%, 21%, 1);
+	--md-typeset-a-color: #4661ff;
+}

@@ -11,3 +11,4 @@ class Message:
 class MessageBody:
     """Class for representing the FastAPI message body."""
     message: Optional[str] = None
+    auth: Optional[str] = None
