@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 import codecs
 import os
 
@@ -10,16 +10,16 @@ with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
 VERSION = '0.1.4'
 DESCRIPTION = 'Library for easily creating and managing websockets.'
 
-# Setting up
 setup(
-    name="hoist3",
-    version=VERSION,
-    author="ZeroIntensity",
-    author_email="<zintensitydev@gmail.com>",
-    description=DESCRIPTION,
-    long_description_content_type="text/markdown",
-    long_description=long_description,
-    packages=find_packages(),
-    install_requires=['flask', 'requests', 'fastapi', 'uvicorn', 'asyncio'],
-    keywords=[]
+    name = "hoist3",
+    version = VERSION,
+    author = "ZeroIntensity",
+    author_email = "<zintensitydev@gmail.com>",
+    description = DESCRIPTION,
+    long_description_content_type = "text/markdown",
+    long_description = long_description,
+    license = 'MIT',
+    maintainer = 'ZeroIntensity',
+    packages = ['hoist'],
+    install_requires = ['requests', 'fastapi', 'uvicorn', 'asyncio']
 )

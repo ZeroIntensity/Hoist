@@ -6,6 +6,7 @@ from fastapi import Request, Response
 
 class Server(Route):
     def __init__(self, *args, **kwargs) -> None:
+        """Constructor for the `Server` class."""
         super().__init__(*args, **kwargs)
         self._routes: List[Route] = []
     
@@ -19,7 +20,16 @@ class Server(Route):
         self._routes.append(route)
 
     def create_route(self, path: str, auth: List[str] = []) -> Route:
-        """Function for adding a route to the server."""
+        """Function for adding a route to the server.
+path: Path to create the route object for.
+auth: List of valid authentication tokens for that route.
+example ```py
+import hoist
+
+server = hoist.create_server('localhost', 5000)
+route = server.create_route('/hello') # creates a route at path '/hello'
+```
+"""
         route = Route(self.server, self.url + path, auth)
 
         @self.server.post(path)
@@ -35,14 +45,9 @@ class Server(Route):
                     }
 
             resp: Response = await route.got_message(msg)
-            resp_type: str = 'response' if not resp.failure else 'error'
-
             response.status_code = resp.code
 
-            return {
-                resp_type: resp.message,
-                'status': resp.code
-            }
+            return resp.make()
 
         self.routes.append(route)
         return route

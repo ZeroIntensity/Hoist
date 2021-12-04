@@ -8,7 +8,11 @@ from .message import Message
 class Route:
     """Class representing a message listener on a route."""
     def __init__(self, server: FastAPI, url: str, auth: List[str] = []) -> None:
-        """Class representing a message listener on a route."""
+        """Constructor for the `Route` class.
+server: property server
+url: property url
+auth: property auth
+"""
         self.__server = server
         self._message_listeners: Dict[Union[str, None], Coroutine] = {}
         self.__url = url
@@ -22,7 +26,7 @@ class Route:
         async def invalid_args(request, exc) -> JSONResponse:
             return self.make_response('Invalid Arguments', 400, True)
     
-    async def handle_exceptions(self, request: Request, call_next):
+    async def handle_exceptions(self, request: Request, call_next) -> None:
         """FastAPI method for handling exceptions."""
         print('1', self._errors)
         try:
@@ -65,7 +69,15 @@ class Route:
         return self._auth
 
     async def run_resolver(self, collection: Dict[str, Coroutine], key: str, resolver_args: List[Any] = [], resolver_kwargs: Dict[Any, Any] = {}, default_code: int = 200, no_response: str = 'Server did not respond.', no_response_code: int = 502) -> Response:
-        """Function for running a resolver on the server."""
+        """Function for running a resolver on the server.
+collection: Collection to get the listener from.
+key: Key to use when getting the listener from the collection.
+resolver_args: Arguments to pass to the resolver.
+resolver_kwargs: Kwargs to pass to the resolver.
+default_code: Status code to use when the resolver doesn't explicitly set it.
+no_response: Message to respond with when the resolver doesn't give any return value.
+no_response_code: Status code to use when the resolver doesn't give any return value.
+"""
         listener: Coroutine = collection.get(key)
         if listener:
             resolver: Union[str, Tuple[Union[str, int]]] = await listener(*resolver_args, **resolver_kwargs)
@@ -77,17 +89,35 @@ class Route:
         return Response(no_response, no_response_code, True) if not listener else Response(message = msg, code = code, failure = failure)
 
     async def got_message(self, message: Message = None) -> Response:
-        """Internal method for calling a message listener."""
+        """Internal method for calling a message listener.
+message: Message that was received.
+"""
         return await self.run_resolver(self.message_listeners, message.content, [message])
     
     def received(self, message: Union[str, None] = None) -> None:
-        """Decorator for adding a message resolver to the route."""
+        """Decorator for adding a message resolver to the route.
+message: Message to listen for.
+example ```py
+import hoist
+
+server = hoist.create_server('localhost', 5000)
+listener = server.create_route('/hello')
+
+@listener.received('hi')
+async def test_received(message: hoist.Message) -> str:
+    return "hello!"
+
+# now, when you send "hi" to the server it will respond with "hello!"
+```
+"""
         def decorator(coro: Coroutine):
             self.message_listeners[message] = coro
         return decorator
 
     def error(self, error: Union[Type[Exception], int]) -> None:
-        """Decorator for adding an error handler to the route."""
+        """Decorator for adding an error handler to the route.
+error: Error to listen for.
+"""
         def decorator(coro: Coroutine):
             if isinstance(error, int):
                 self._error_codes[error] = coro
@@ -96,11 +126,12 @@ class Route:
         return decorator
     
     def make_response(self, message: str, code: int, failure: bool) -> JSONResponse:
-        """Function for generating a JSON response."""
+        """Function for generating a JSON response.
+message: Message to respond with.
+code: Status code to respond with.
+failure: Whether the response is an error.
+"""
         return JSONResponse(
-            {
-                'error' if failure else 'message': message,
-                'status': code,
-            }, status_code = code
+            Response(message, code, failure).make(), status_code = code
         )
         
